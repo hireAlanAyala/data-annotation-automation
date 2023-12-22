@@ -8,6 +8,9 @@ if (window && !window.isContentScriptInjected) {
     if (request.action === "scrape") {
       scrapequery();
       sendResponse({ status: "Content scraped" });
+      }
+    if (request.message === "talk") {
+        console.log('successfully talked to background.');
     }
   });
 }
@@ -44,7 +47,6 @@ const questions = question_elements.map((el) => el.textContent);
   } });
 
   question_elements.forEach((el) => {
-    // TODO: pass answer from gpt into second arg
     answerquestion(el, "Amazing");
   });
 }
@@ -59,8 +61,8 @@ function answerquestion(question, answer) {
   answerElement?.click();
 }
 
-// Version 1: Web-ext scrapes page and gets a response from GPT
-// (maybe in a popup)
+// Version 1: Web-ext scrapes page and gets a response from GPT (popup cheatsheet)
+
 // Version 2: Fill in radio buttons and response from GPT
 // Version 3: Automated scrolls and waits to fill in GPT response
 
