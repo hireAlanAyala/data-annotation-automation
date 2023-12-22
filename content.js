@@ -11,33 +11,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 function scrapequery() {
-    // const instructions = document.querySelector('[data-testid="instructions"]').textContent;
 
     const fields = document.querySelector('[data-testid="fields-text"]').textContent;
-
     const question_elements = document.querySelectorAll('[data-testid^="question-"]');
-    
     const questions = [];
 
     for (const elem of question_elements) {
-  
         var regex = /^question-\d+$/;
         var testDataId = elem.getAttribute('data-testid');
-
         if (regex.test(testDataId)) {
            questions.push(elem.textContent);
         }
     }
 
      for (const elem of question_elements) {
-  
          answerquestion(elem, 'Amazing');
     }
-    console.log(questions);
 }
 
 function answerquestion(question, response) {
-    console.log(question);
     // grab all elements and search text content of them
     // identify the html element 'answer'
 
@@ -53,12 +45,11 @@ function answerquestion(question, response) {
         if (elementWithText) {
             console.log("Element containing " + response , elementWithText);
         } else {
-            console.log(f"No element with " + response + " found inside " + question);
+            console.log("No element with " + response + " found inside " + question);
         }
     } else {
         console.log("Parent element with ID " + question + " not found");
     }
-
 }
 
    // Version 1: Web-ext scrapes page and gets a response from GPT
