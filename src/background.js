@@ -1,7 +1,8 @@
-import { apiKey } from "./apiKey.js";
-
+// handle scraping
 chrome.commands.onCommand.addListener((command) => {
   if (command === "scrape-content") {
+console.log('key', import.meta.env.VITE_OPEN_AI_API_KEY);
+
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.scripting.executeScript(
         {
@@ -14,3 +15,11 @@ chrome.commands.onCommand.addListener((command) => {
     });
   }
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.apiCall) callOpenAI(request.apiCall)
+});
+
+function callOpenAI(prompt) {
+  console.log('calling model');
+}

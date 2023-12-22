@@ -1,5 +1,5 @@
 // prevents multiple injections of content script
-if (!window?.isContentScriptInjected) {
+if (window && !window.isContentScriptInjected) {
   console.log("loading content.js");
 
   window.isContentScriptInjected = true;
@@ -15,6 +15,10 @@ if (!window?.isContentScriptInjected) {
 function scrapequery() {
   console.log("Scraping...");
 
+  const instructions = document.querySelector(
+    '[data-testid="instructions"]'
+  ).textContent;
+
   const fields = document.querySelector(
     '[data-testid="fields-text"]'
   ).textContent;
@@ -26,25 +30,33 @@ function scrapequery() {
   const question_elements =
     // coverts NodeList to Array
     Array.from(all_question_elements)
-    // grabs only the correct question elements
-    .filter((elem) =>
+      // grabs only the correct question elements
+      .filter((elem) =>
         /^question-\d+$/.test(elem.getAttribute("data-testid"))
-    );
+      );
+
+const questions = question_elements.map((el) => el.textContent);
+
+  chrome.runtime.sendMessage({ apiCall: {
+    instructions,
+    fields,
+    questions
+  } });
 
   question_elements.forEach((el) => {
     // TODO: pass answer from gpt into second arg
-    answerquestion(el, 'Amazing')
-  })
+    answerquestion(el, "Amazing");
+  });
 }
 
 function answerquestion(question, answer) {
   const answerElement =
-    // coverts NodeList to Array
+    // Array.from coverts NodeList to Array
     Array.from(question.querySelectorAll("label"))
-    // find the element that contains the answer for this question
-    .find((el) => el.textContent.includes(answer));
+      // find the element that contains the answer for this question
+      .find((el) => el.textContent.includes(answer));
 
-    answerElement?.click();
+  answerElement?.click();
 }
 
 // Version 1: Web-ext scrapes page and gets a response from GPT

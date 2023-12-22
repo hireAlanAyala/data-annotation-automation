@@ -1,25 +1,25 @@
 {
-    "manifest_version": 3,
-    "name": "kaden's extension",
-    "version": "1.0",
-    "permissions": ["activeTab", "scripting"],
-    "background": {
-        "service_worker": "./background.js",
-        "type": "module"
-    },
-    "commands": {
-        "scrape-content": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+Y"
-            },
-            "description": "Scrape page content"
-        }
-    },
-    "action": {},
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["content.js"]
-        }
-    ]
+  "manifest_version": 3,
+  "name": "kaden's extension",
+  "version": "1.0",
+  "permissions": ["activeTab", "scripting"],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "commands": {
+    "scrape-content": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Scrape page content"
+    }
+  },
+  "action": {},
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }
