@@ -10,24 +10,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 });
 
+var regex = /^question-\d+$/;
+
 function scrapequery() {
     // const instructions = document.querySelector('[data-testid="instructions"]').textContent;
 
     const fields = document.querySelector('[data-testid="fields-text"]').textContent;
 
-    const question_elements = document.querySelectorAll('[data-testid^="question-"]');
-    
-    const questions = [];
+    const question_elements =
+        document.querySelectorAll('[data-testid^="question-"]')
+        // trims out junk html elements
+        .filter(function(elem) {
+            var testDataId = elem.getAttribute('data-testid');
+            return regex.test(testDataId);
+        })
 
-    for (const elem of question_elements) {
-  
-        var regex = /^question-\d+$/;
-        var testDataId = elem.getAttribute('data-testid');
+    const questions = question_elements.map(function(elem) {
+        return elem.textContent;
+    })
 
-        if (regex.test(testDataId)) {
-           questions.push(elem.textContent);
-        }
+    questions.forEach(function(question, i) {
+        const question_element = question_elements[i];
 
-    }
-    console.log(questions);
+        answerQuestion(question_element, answer)
+    })
 }
