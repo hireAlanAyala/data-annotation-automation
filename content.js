@@ -1,46 +1,50 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "scrape") {
-    scrapequery();
-    sendResponse({ status: "Content scraped" });
-  }
-});
+// prevents multiple injections of content script
+if (!window?.isContentScriptInjected) {
+  console.log("loading content.js");
 
-const regex = /^question-\d+$/;
+  window.isContentScriptInjected = true;
+
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "scrape") {
+      scrapequery();
+      sendResponse({ status: "Content scraped" });
+    }
+  });
+}
 
 function scrapequery() {
+  console.log("Scraping...");
+
   const fields = document.querySelector(
     '[data-testid="fields-text"]'
   ).textContent;
 
-  const question_elements = document
-    .querySelectorAll('[data-testid^="question-"]')
-    // trims out junk html elements
-    .filter(function (elem) {
-      var testDataId = elem.getAttribute("data-testid");
-      return regex.test(testDataId);
-    });
+  const all_question_elements = document.querySelectorAll(
+    '[data-testid^="question-"]'
+  );
 
-  const questions = question_elements.map(function (elem) {
-    return elem.textContent;
-  });
+  const question_elements =
+    // coverts NodeList to Array
+    Array.from(all_question_elements)
+    // grabs only the correct question elements
+    .filter((elem) =>
+        /^question-\d+$/.test(elem.getAttribute("data-testid"))
+    );
 
-  questions.forEach(function (question, i) {
-    const question_element = question_elements[i];
-
-    // answerquestion(question_element, 'Amazing');
-  });
-
-  console.log(questions);
+  question_elements.forEach((el) => {
+    // TODO: pass answer from gpt into second arg
+    answerquestion(el, 'Amazing')
+  })
 }
 
-function answerquestion(questionElement, answer) {
-  const [answerElement] = questionElement
-    // grabs all elements
-    .querySelectorAll("*")
-    // finds the answer element
-    .filter(() => element.textContent.includes(answer));
+function answerquestion(question, answer) {
+  const answerElement =
+    // coverts NodeList to Array
+    Array.from(question.querySelectorAll("label"))
+    // find the element that contains the answer for this question
+    .find((el) => el.textContent.includes(answer));
 
-  answerElement?.click();
+    answerElement?.click();
 }
 
 // Version 1: Web-ext scrapes page and gets a response from GPT

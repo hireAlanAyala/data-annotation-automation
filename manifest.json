@@ -4,8 +4,7 @@
     "version": "1.0",
     "permissions": ["activeTab", "scripting"],
     "background": {
-        "service_worker": "background.js",
-        "type": "module"
+        "service_worker": "background.js"
     },
     "commands": {
         "scrape-content": {
@@ -15,9 +14,7 @@
             "description": "Scrape page content"
         }
     },
-    "action": {
-        "default_popup": "popup.html"
-    },
+    "action": {},
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
