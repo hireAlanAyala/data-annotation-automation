@@ -1,3 +1,5 @@
+import { apiKey } from "./apiKey.js";
+
 chrome.commands.onCommand.addListener((command) => {
   if (command === "scrape-content") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
